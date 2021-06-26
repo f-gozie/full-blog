@@ -70,6 +70,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'full_blog.wsgi.application'
 
+# Celery config
+BROKER_URL = config('BROKER_URL')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Lagos'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

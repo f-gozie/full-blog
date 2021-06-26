@@ -3,7 +3,9 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
 from .models import Post, Comment
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, ContactForm
+
+from .helpers.sendgrid import send_mail
 
 
 def post_list(request):
@@ -82,3 +84,16 @@ def handle_comment(request, pk, action):
 	elif action == "delete":
 		comment.delete()
 		return redirect('post_detail', pk=comment.post.pk)
+
+
+def contact_us(request):
+	if request.method == 'POST':
+		form = ContactForm(request.POST)
+		contact = form.save(commit=False)
+		to = contact.email
+		send_mail.delay(to=to)
+		contact.save()
+		return redirect('post_list')
+	else:
+		form = ContactForm()
+	return render(request, 'blog/contact_us.html', {'form':form})

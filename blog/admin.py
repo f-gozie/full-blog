@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment
+from .models import Post, Comment, Contact
 
 
 @admin.register(Post)
@@ -19,3 +19,8 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
 	pass
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+	list_display = ['name', 'email', 'subject']
+	readonly_fields = ('name', 'email', 'subject', 'message')
