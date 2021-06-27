@@ -1,14 +1,24 @@
 from django.contrib import admin
-from .models import Post, Comment, Contact
+from .models import Post, Comment, Contact, Tag
+from .forms import PostForm
 
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
+
+	# Column Methods
+	def get_tags(self, obj):
+		return [tag for tag in obj.tags.all()]
+
+	# Admin Config
+	form = PostForm
+	filter_horizontal = ['tags']
 	empty_value_display = '-empty-'
-	list_display = ['id', 'author', 'title', 'text', 'created_date', 'published_date']
+	get_tags.short_description = 'Tags'
+	list_display = ['id', 'author', 'title', 'created_date', 'published_date', 'get_tags']
 	fieldsets = (
 		(None, {
-			'fields': ('author', 'title', 'text'),
+			'fields': ('author', 'title', 'text', 'tags'),
 		}),
 		('Advanced Options', {
 			'classes': ('collapse',),
@@ -16,9 +26,16 @@ class PostAdmin(admin.ModelAdmin):
 		}),
 	)
 
+
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
 	pass
+
+
+@admin.register(Tag)
+class CommentAdmin(admin.ModelAdmin):
+	pass
+
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):

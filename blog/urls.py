@@ -12,5 +12,6 @@ urlpatterns = [
 	path('post/<int:pk>/delete', views.post_delete, name='post_delete'),
 	path('post/<int:pk>/comment/add', views.add_comment, name='add_comment'),
 	path('post/<int:pk>/comment/<str:action>', views.handle_comment, name='handle_comment'),
-	path('contact_us/', views.contact_us, name='contact_us')
+	path('contact_us/', views.contact_us, name='contact_us'),
+	path('tag/<int:tag_id>/posts', views.tag_posts, name='tag_posts')
 ]
