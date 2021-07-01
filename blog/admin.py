@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment, Contact, Tag
+from .models import Post, Comment, Contact, Tag, Category
 from .forms import PostForm
 
 
@@ -15,10 +15,11 @@ class PostAdmin(admin.ModelAdmin):
 	filter_horizontal = ['tags']
 	empty_value_display = '-empty-'
 	get_tags.short_description = 'Tags'
-	list_display = ['id', 'author', 'title', 'created_date', 'published_date', 'get_tags']
+	list_display = ['title','author', 'category', 'created_date', 'published_date', 'get_tags', 'display_img']
+	list_display_links = ['title']
 	fieldsets = (
 		(None, {
-			'fields': ('author', 'title', 'text', 'tags'),
+			'fields': ('author', 'title', 'category', 'text', 'tags', 'display_img'),
 		}),
 		('Advanced Options', {
 			'classes': ('collapse',),
@@ -41,3 +42,12 @@ class CommentAdmin(admin.ModelAdmin):
 class ContactAdmin(admin.ModelAdmin):
 	list_display = ['name', 'email', 'subject']
 	readonly_fields = ('name', 'email', 'subject', 'message')
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+# 	Column Methods
+	def get_posts(self, obj):
+		return len([post for post in obj.posts.all()])
+
+	get_posts.short_description = "No of Posts"
+	list_display = ['category', 'get_posts']

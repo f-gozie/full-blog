@@ -2,13 +2,25 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 
+from autoslug import AutoSlugField
+
 
 class Tag(models.Model):
-	tag = models.CharField(max_length = 30)
+	tag = models.CharField(max_length = 50)
+	slug = AutoSlugField(null = True, default = None, unique = True, populate_from='tag')
 
 	def __str__(self):
 		return self.tag
 
+class Category(models.Model):
+	category = models.CharField(max_length = 50)
+
+	class Meta:
+		verbose_name_plural = "Categories"
+
+
+	def __str__(self):
+		return self.category
 
 
 class Post(models.Model):
@@ -17,7 +29,9 @@ class Post(models.Model):
 	text = models.TextField()
 	created_date = models.DateTimeField(default = timezone.now)
 	published_date = models.DateTimeField(blank = True, null = True)
-	tags = models.ManyToManyField(Tag, related_name = 'tags', blank=True)
+	tags = models.ManyToManyField(Tag, related_name = 'posts', blank=True)
+	display_img = models.ImageField(upload_to = 'displays')
+	category = models.ForeignKey(Category, on_delete = models.CASCADE, related_name='posts')
 
 	def publish(self):
 		self.published_date = timezone.now()
