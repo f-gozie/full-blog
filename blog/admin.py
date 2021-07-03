@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment, Contact, Tag, Category
+from .models import Post, Comment, Contact, Tag, Category, IPAddress
 from .forms import PostForm
 
 
@@ -15,7 +15,7 @@ class PostAdmin(admin.ModelAdmin):
 	filter_horizontal = ['tags']
 	empty_value_display = '-empty-'
 	get_tags.short_description = 'Tags'
-	list_display = ['title','author', 'category', 'created_date', 'published_date', 'get_tags', 'display_img']
+	list_display = ['title','author', 'views', 'category', 'created_date', 'published_date', 'get_tags', 'display_img']
 	list_display_links = ['title']
 	fieldsets = (
 		(None, {
@@ -51,3 +51,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 	get_posts.short_description = "No of Posts"
 	list_display = ['category', 'get_posts']
+
+
+@admin.register(IPAddress)
+class IPAddressClass(admin.ModelAdmin):
+	list_display = ['ip_address']

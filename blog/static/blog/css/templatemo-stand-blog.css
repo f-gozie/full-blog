@@ -473,6 +473,13 @@ header .navbar {
 	color: #f48840;
 }
 
+.detail-data {
+	padding: 25px 0px !important;
+	margin: 25px 0px !important;
+	border-top: 1px solid #eee !important;
+	border-bottom: 1px solid #eee !important;
+}
+
 .blog-posts .down-content p {
 	padding: 25px 0px;
 	margin: 25px 0px;
@@ -569,7 +576,7 @@ ul.page-numbers li a:hover {
 }
 
 .blog-posts .comments ul li {
-	display: inline-block;
+	/*display: inline-block;*/
 	margin-bottom: 20px;
 	padding-bottom: 20px;
 	border-bottom: 1px solid #eee;
@@ -596,7 +603,8 @@ ul.page-numbers li a:hover {
 }
 
 .blog-posts .comments ul li .right-content {
-	margin-left: 130px;
+	/*margin-left: 70px;*/
+	display: block;
 }
 
 .blog-posts .comments ul li .right-content h4 {

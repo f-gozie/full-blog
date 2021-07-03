@@ -7,3 +7,7 @@ register = template.Library()
 @register.filter
 def get_value(dictionary, key):
 	return dictionary.get(key)
+
+@register.simple_tag
+def get_tags():
+	return Tag.objects.all()

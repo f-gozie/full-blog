@@ -25,7 +25,7 @@ SECRET_KEY = config('SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['cbb6aa003e70.ngrok.io', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -39,10 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog',
     'ckeditor',
-    'django_social_share'
+    'django_social_share',
+    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -92,6 +94,12 @@ CACHE = {
     }
 }
 CACHE_TTL = 60 * 15
+
+# Django Debug Toolbar Config
+INTERNAL_IPS = [
+    'localhost',
+    '127.0.0.1',
+]
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

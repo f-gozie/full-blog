@@ -23,6 +23,15 @@ class Category(models.Model):
 		return self.category
 
 
+class IPAddress(models.Model):
+	ip_address = models.GenericIPAddressField()
+
+	class Meta:
+		verbose_name_plural = "IP Addresses"
+
+	def __str__(self):
+		return self.ip_address
+
 class Post(models.Model):
 	author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE)
 	title = models.CharField(max_length = 100)
@@ -32,6 +41,8 @@ class Post(models.Model):
 	tags = models.ManyToManyField(Tag, related_name = 'posts', blank=True)
 	display_img = models.ImageField(upload_to = 'displays')
 	category = models.ForeignKey(Category, on_delete = models.CASCADE, related_name='posts')
+	views = models.PositiveIntegerField(default=0)
+	ips = models.ManyToManyField(IPAddress, related_name = 'posts', blank = True)
 
 	def publish(self):
 		self.published_date = timezone.now()
@@ -43,6 +54,8 @@ class Post(models.Model):
 	def approved_comments(self):
 		return self.comments.filter(is_approved=True)
 
+	def get_ip_list(self):
+		return [ip.ip_address for ip in self.ips.all() ]
 
 class Comment(models.Model):
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')

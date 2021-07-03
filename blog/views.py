@@ -4,11 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.views.decorators.cache import cache_page
+from django.db.models import F
 
-from .models import Post, Comment, Tag
+from .models import Post, Comment, Tag, IPAddress
 from .forms import PostForm, CommentForm, ContactForm
+from .utils import get_client_ip
 
 from .helpers.sendgrid import send_mail
+
 
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
@@ -22,10 +25,9 @@ def post_list(request):
 def new_index(request):
 	posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
 	recent_posts = posts.order_by('-published_date')[:3]
-	dot_posts = { hot_post:hot_post.approved_comments().count() for hot_post in posts if hot_post.approved_comments().count() > 0}
-	sorted_hot_posts = dict(sorted(dot_posts.items(), key=lambda x: x[1], reverse=True))
-	v_tags = Tag.objects.all()
-	return render(request, 'blog/new_index.html', {'posts': posts, 'v_tags': v_tags, 'recent_posts': recent_posts, 'sorted_hot_posts': sorted_hot_posts})
+	hot_posts = { hot_post:hot_post.approved_comments().count() for hot_post in posts if hot_post.approved_comments().count() > 0}
+	sorted_hot_posts = dict(sorted(hot_posts.items(), key=lambda x: x[1], reverse=True))
+	return render(request, 'blog/new_index.html', {'posts': posts, 'recent_posts': recent_posts, 'sorted_hot_posts': sorted_hot_posts})
 
 
 def tag_posts(request, tag_slug):
@@ -36,6 +38,14 @@ def tag_posts(request, tag_slug):
 # @cache_page(CACHE_TTL)
 def post_detail(request, pk):
 	post = get_object_or_404(Post, id=pk)
+	ip_list = post.get_ip_list()
+	user_ip = get_client_ip(request)
+	if not user_ip in ip_list:
+		post.views = F('views') + 1
+		ip_address, _ = IPAddress.objects.get_or_create(ip_address = user_ip)
+		post.ips.add(ip_address)
+		post.save()
+		post.refresh_from_db()
 	return render(request, 'blog/post_detail.html', {'post':post})
 
 @login_required
