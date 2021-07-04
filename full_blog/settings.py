@@ -25,8 +25,8 @@ SECRET_KEY = config('SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['cbb6aa003e70.ngrok.io', '127.0.0.1', 'localhost']
 
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast = lambda x: [host.strip() for host in x.split(',')])
 
 # Application definition
 
@@ -106,8 +106,12 @@ INTERNAL_IPS = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'gfhnews',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
