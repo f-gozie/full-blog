@@ -1,4 +1,5 @@
-from django.db import models
+# from django.db import models
+from django.contrib.gis.db import models
 from django.utils import timezone
 from django.conf import settings
 
@@ -25,6 +26,8 @@ class Category(models.Model):
 
 class IPAddress(models.Model):
 	ip_address = models.GenericIPAddressField()
+	location = models.PointField(null=True)
+	country = models.CharField(max_length = 50, null = True)
 
 	class Meta:
 		verbose_name_plural = "IP Addresses"

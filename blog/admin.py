@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.gis.admin import OSMGeoAdmin
 from .models import Post, Comment, Contact, Tag, Category, IPAddress
 from .forms import PostForm
 
@@ -54,5 +55,5 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(IPAddress)
-class IPAddressClass(admin.ModelAdmin):
-	list_display = ['ip_address']
+class IPAddressClass(OSMGeoAdmin):
+	list_display = ['ip_address', 'country']

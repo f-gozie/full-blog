@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.contrib.gis.geoip2 import GeoIP2
+from django.contrib.gis.geos import fromstr
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.views.decorators.cache import cache_page
@@ -37,12 +39,15 @@ def tag_posts(request, tag_slug):
 
 # @cache_page(CACHE_TTL)
 def post_detail(request, pk):
+	g = GeoIP2()
 	post = get_object_or_404(Post, id=pk)
 	ip_list = post.get_ip_list()
 	user_ip = get_client_ip(request)
+	location_info = g.city(str(user_ip))
+	longitude, latitude, country = location_info['longitude'], location_info['latitude'], location_info['country_name']
 	if not user_ip in ip_list:
 		post.views = F('views') + 1
-		ip_address, _ = IPAddress.objects.get_or_create(ip_address = user_ip)
+		ip_address, _ = IPAddress.objects.get_or_create(ip_address = user_ip, location = fromstr(f"POINT({longitude} {latitude})", srid=4326), country = country)
 		post.ips.add(ip_address)
 		post.save()
 		post.refresh_from_db()

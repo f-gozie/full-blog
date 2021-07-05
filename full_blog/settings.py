@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'blog',
     'ckeditor',
     'django_social_share',
@@ -101,12 +102,15 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
+# Geolocation Config
+GEOIP_PATH = BASE_DIR / 'locations/'
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'gfhnews',
         'USER': 'admin',
         'PASSWORD': 'admin',
